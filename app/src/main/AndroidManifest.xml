@@ -4,7 +4,11 @@
   xmlns:tools="http://schemas.android.com/tools"
   >
 
-  <application
+  <uses-permission android:name="android.permission.INTERNET" />
+
+  <!-- TODO : J'ai du ajouter usesCleartextTraffic pour pouvoir faire des requêtes HTTP-->
+  <application android:name=".app.BankApp"
+      android:usesCleartextTraffic="true"
     android:allowBackup="true"
     android:dataExtractionRules="@xml/data_extraction_rules"
     android:fullBackupContent="@xml/backup_rules"

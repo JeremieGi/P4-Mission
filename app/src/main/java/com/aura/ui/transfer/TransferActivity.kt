@@ -24,13 +24,13 @@ class TransferActivity : AppCompatActivity()
     binding = ActivityTransferBinding.inflate(layoutInflater)
     setContentView(binding.root)
 
-    val recipient = binding.recipient
-    val amount = binding.amount
-    val transfer = binding.transfer
-    val loading = binding.loading
+    val edtRecipient = binding.edtRecipient
+    val edtAmount = binding.edtAmount
+    val buttonTransfer = binding.buttonTransfer
+    val progressbarTransferLoading = binding.progressbarTransferLoading
 
-    transfer.setOnClickListener {
-      loading.visibility = View.VISIBLE
+    buttonTransfer.setOnClickListener {
+      progressbarTransferLoading.visibility = View.VISIBLE
 
       setResult(Activity.RESULT_OK)
       finish()

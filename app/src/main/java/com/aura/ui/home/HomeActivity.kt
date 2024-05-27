@@ -23,6 +23,8 @@ class HomeActivity : AppCompatActivity()
    */
   private lateinit var binding: ActivityHomeBinding
 
+
+
   /**
    * A callback for the result of starting the TransferActivity.
    */
@@ -38,12 +40,14 @@ class HomeActivity : AppCompatActivity()
     binding = ActivityHomeBinding.inflate(layoutInflater)
     setContentView(binding.root)
 
-    val balance = binding.balance
-    val transfer = binding.transfer
+    val tvBalance = binding.tvBalance
+    val buttonToTransfer = binding.buttonToTransfer
 
-    balance.text = "2654,54€"
+    tvBalance.text = "2654,54€"
 
-    transfer.setOnClickListener {
+    // LISTENER
+
+    buttonToTransfer.setOnClickListener {
       startTransferActivityForResult.launch(Intent(this@HomeActivity, TransferActivity::class.java))
     }
   }
