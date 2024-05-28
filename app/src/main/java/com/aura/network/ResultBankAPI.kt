@@ -2,6 +2,7 @@ package com.aura.network
 
 /**
  * Structuration de la réponse de l'API
+ * Utilisé dans le flow qui permet la communication entre le ViewModel et le repository
  */
 sealed class ResultBankAPI<out T> {
 
@@ -14,6 +15,8 @@ sealed class ResultBankAPI<out T> {
 
     // C'est une classe de données générique qui stocke le résultat de l'opération en cas de succès.
     // Elle prend un type générique R pour permettre de représenter différents types de résultats.
-    data class Success<out R>(val value: R) : ResultBankAPI<R>()
+    data class Success<out R>(
+        val value: R // Permet de récupérer les valeurs de ResultBankAPI
+    ) : ResultBankAPI<R>()
 
 }

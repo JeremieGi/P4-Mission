@@ -8,7 +8,6 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.aura.databinding.ActivityLoginBinding
 import com.aura.ui.home.HomeActivity
-import androidx.lifecycle.ViewModelProvider
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
@@ -54,15 +53,8 @@ class LoginActivity : AppCompatActivity()
 
     // LISTENERS
 
-    // Connexion button
-    binding.btnlogin.setOnClickListener {
 
-      progressbarLoading.visibility = View.VISIBLE
-
-      // Lance l'appel API de façon asynchrose
-      viewModel.login(binding.edtLogin.text.toString(), binding.edtPassword.text.toString())
-
-    }
+    // Saisie du login et du mot de passe
 
     binding.edtLogin.addTextChangedListener(object : TextWatcher {
 
@@ -95,6 +87,15 @@ class LoginActivity : AppCompatActivity()
     })
 
 
+    // Connexion button
+    binding.btnlogin.setOnClickListener {
+
+      progressbarLoading.visibility = View.VISIBLE
+
+      // Lance l'appel API de façon asynchrose
+      viewModel.login(binding.edtLogin.text.toString(), binding.edtPassword.text.toString())
+
+    }
 
     lifecycleScope.launch { // Utilise le lifecycleScope de l'activité pour lancer une coroutine.
 
@@ -112,8 +113,15 @@ class LoginActivity : AppCompatActivity()
 
           // it est ici de type LoginUIStates
 
-          // Affichage de la progressBar pendant le chargement
+          // TODO : Pourquoi au lancement en debug je breake ici : un LoginUIStates vide semble envoyé
+
+          // T003 - Affichage de la progressBar pendant le chargement
           binding.progressbarLoading.isVisible = it.isLoading
+
+          // T003 - Manage the loading state on the login screen
+          binding.btnlogin.isEnabled = !it.isLoading // T003 - The login button is disabled while the credentials are being checked
+          //if (it.isLoading) delay(5*1000) // Test  of T003
+
 
           // Vérification qu'il n'y ait pas d'erreur
           if (it.sErrorMessage?.isNotBlank() == true) {
@@ -133,6 +141,7 @@ class LoginActivity : AppCompatActivity()
 
             }
 
+
           }
 
 
@@ -150,7 +159,7 @@ class LoginActivity : AppCompatActivity()
    */
   fun enableOrDesableConnexionButton(){
 
-    // Etape 1
+    // T001 - Add business rules on the login screen
 
     binding.btnlogin.isEnabled =
       viewModel.bCheckButtonConnexionClickable(binding.edtLogin.text.toString(), binding.edtPassword.text.toString())

@@ -30,53 +30,68 @@ class LoginViewModel @Inject constructor(
     /**
      * StateFlow est une classe du framework Kotlin Flow qui émet une séquence de valeurs et garantit qu'un observateur reçoit toujours la dernière valeur émise.
      * Dans cet exemple, on expose un  StateFlow  en lecture seule à partir du  MutableStateFlow  créé précédemment.
+     * C'est cet objet qui va être utilisé par l'activty pour collecter les LoginUIStates
      */
     val uiState: StateFlow<LoginUIStates> = _uiState.asStateFlow()
 
     /**
      * When the button 'Connexion' is usable
      */
-    fun bCheckButtonConnexionClickable(sLoginP : String, sPasswordP : String) : Boolean {
+    fun bCheckButtonConnexionClickable(sLoginP: String, sPasswordP: String): Boolean {
         return sLoginP.isNotEmpty() && sPasswordP.isNotEmpty()
     }
 
-    fun login(sLoginP : String, sPasswordP : String){
+    fun login(sLoginP: String, sPasswordP: String) {
 
-        // onEach : Cette fonction est appelée chaque fois que de nouvelles données sont émises par la coroutine.
-        dataRepository.login(sLoginP,sPasswordP).onEach { resultAPI ->
+        // onEach : Ce bloc est appelé chaque fois que de nouvelles données sont émises par le flow
+        dataRepository.login(sLoginP, sPasswordP).onEach { resultAPI ->
 
             // En fonction du résultat de l'API
             when (resultAPI) {
                 // Echec
-                is ResultBankAPI.Failure -> _uiState.update { currentState ->
-                    currentState.copy(
-                        // Syntaxe par paramètres nommés
-                        isLoading = false,
-                        bAccessGranted = false,
-                        sErrorMessage  = resultAPI.message
-                    )
-                }
+                is ResultBankAPI.Failure ->
+                    _uiState.update { currentState ->
+                        currentState.copy( // crée une nouvelle instance de l'état avec les valeurs spécifiées
+                            // Syntaxe par paramètres nommés
+                            isLoading = false,
+                            bAccessGranted = false,
+                            sErrorMessage = resultAPI.message
+                        )
+                    }
                 // En chargement
-                ResultBankAPI.Loading -> _uiState.update { currentState ->
-                    currentState.copy(
-                        // Syntaxe par paramètres nommés
-                        isLoading = true,
-                        bAccessGranted = false,
-                        sErrorMessage = null,
-                    )
-                }
+                ResultBankAPI.Loading ->
+                    _uiState.update { currentState ->
+                        currentState.copy(
+                            // Syntaxe par paramètres nommés
+                            isLoading = true,
+                            bAccessGranted = false,
+                            sErrorMessage = null,
+                        )
+                    }
                 // Succès
-                is ResultBankAPI.Success -> _uiState.update { currentState ->
-                    currentState.copy(
-                        // Syntaxe par paramètres nommés
-                        isLoading = false,
-                        bAccessGranted = true,
-                        sErrorMessage = null,
-                    )
+                is ResultBankAPI.Success -> {
+
+                    var sErrorLogin = ""
+                    if (!resultAPI.value.granted){
+                        sErrorLogin = "Access denied"
+                    }
+
+                    _uiState.update { currentState ->
+                        currentState.copy(
+                            // Syntaxe par paramètres nommés
+                            isLoading = false,
+                            bAccessGranted = resultAPI.value.granted,
+                            sErrorMessage = sErrorLogin,
+                        )
+                    }
+
                 }
+
+
             }
 
-        }.launchIn(viewModelScope) //  Cette partie indique que la coroutine doit être lancée dans le scope du ViewModel. Cela garantit que la coroutine est annulée lorsque le ViewModel est détruit, évitant les fuites de mémoire.
+        }
+            .launchIn(viewModelScope) //  Cette partie indique que la coroutine doit être lancée dans le scope du ViewModel. Cela garantit que la coroutine est annulée lorsque le ViewModel est détruit, évitant les fuites de mémoire.
 
 
     }

@@ -3,7 +3,6 @@ package com.aura.network
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
-import retrofit2.http.Query
 
 interface APIClient {
 
@@ -15,5 +14,5 @@ interface APIClient {
 //    ): Response<APILoginResponse>
 
     @POST("login")
-    suspend fun login(@Body request: LoginPostValue): Response<APILoginResponse>
+    suspend fun login(@Body jsonPostValue: LoginPostValue): Response<APILoginResponse> // L'objet renvoyé est un objet de type Response avec pour paramètre de généricité le type d'objet encapsulé dans cette réponse.
 }
