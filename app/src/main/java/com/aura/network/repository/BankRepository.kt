@@ -1,7 +1,9 @@
 package com.aura.repository
 
-import com.aura.model.LoginReportModel
+import com.aura.model.ModelResponseAccount
+import com.aura.model.ModelResponseLogin
 import com.aura.network.APIClient
+import com.aura.network.APIResponseAccount
 import com.aura.network.LoginPostValue
 import com.aura.network.ResultBankAPI
 import kotlinx.coroutines.flow.Flow
@@ -14,16 +16,16 @@ class BankRepository(
 
     // T002 - Plug the API on the login screen
     /**
-     * Appelle l'API et emet les résultats dans un flow qui sera lu côté UI
+     * Appelle l'API de login et emet les résultats dans un flow qui sera lu côté UI
      */
-    fun login(sLoginP : String, sPasswordP : String) : Flow<ResultBankAPI<LoginReportModel>> = flow {
+    fun login(sLoginP : String, sPasswordP : String) : Flow<ResultBankAPI<ModelResponseLogin>> = flow {
 
         emit(ResultBankAPI.Loading)
 
         // Appel à l'API
         val postValues = LoginPostValue(sLoginP,sPasswordP)
         val result = dataService.login(postValues)
-        // si la requête met du temps, pas grave, on est dans une coroutinre, le thread principal n'est pas bloqué
+        // si la requête met du temps, pas grave, on est dans une coroutine, le thread principal n'est pas bloqué
 
         // Transformation du résultat en données du Model
         val model = result.body()?.toDomainModel() ?: throw Exception("Invalid data")
@@ -35,4 +37,27 @@ class BankRepository(
         emit(ResultBankAPI.Failure(error.message+" "+error.cause?.message)) // Message enrichi
     }
 
+    /**
+     * Appelle l'API permettant de lister les comptes d'un utilisateur
+     * et emet les résultats dans un flow qui sera lu côté UI
+     */
+    fun getListAccount(sUserIDP: String) : Flow<ResultBankAPI<List<ModelResponseAccount>>> = flow {
+
+        emit(ResultBankAPI.Loading)
+
+        // Appel à l'API
+        val resultAPIListAccount = dataService.getAccountDetails(sUserIDP).body()
+        // si la requête met du temps, pas grave, on est dans une coroutine
+
+        // TODO : Revoir cette transformation en données du modèle
+        val resultModelAPIListAccount = APIResponseAccount.toListDomainModel(resultAPIListAccount)
+
+        // Ajout au flow
+        emit(ResultBankAPI.Success(resultModelAPIListAccount))
+
+    }.catch { error ->
+        emit(ResultBankAPI.Failure(error.message+" "+error.cause?.message)) // Message enrichi
+    }
+
 }
+

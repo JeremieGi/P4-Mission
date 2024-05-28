@@ -1,7 +1,7 @@
 package com.aura.network
 
 /**
- * Structuration de la réponse de l'API
+ * Structuration de la réponse de l'API (pour tous les appels)
  * Utilisé dans le flow qui permet la communication entre le ViewModel et le repository
  */
 sealed class ResultBankAPI<out T> {

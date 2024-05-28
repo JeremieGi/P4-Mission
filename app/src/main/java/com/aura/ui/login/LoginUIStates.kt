@@ -4,5 +4,5 @@ data class LoginUIStates(
     val isLoading: Boolean = false,
     val bAccessGranted: Boolean = false,
     val sErrorMessage: String? = null,
-    val bCallback: Boolean = false
+    val bEmpty : Boolean = true
 )

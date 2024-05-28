@@ -115,54 +115,66 @@ class LoginActivity : AppCompatActivity()
 
           // it est ici de type LoginUIStates
 
+          binding.progressbarLoading.isVisible = false
+
           // TODO : Pourquoi au lancement en debug je breake ici : un LoginUIStates vide semble envoyé
           // Du coup j'utilise bCallback pour gérer le problème
-          if (it.bCallback){
+          if (!it.bEmpty){
 
-            // T003 - Affichage de la progressBar pendant le chargement
-            binding.progressbarLoading.isVisible = it.isLoading
+            if (it.isLoading){
+              // T003 - Affichage de la progressBar pendant le chargement
+              binding.progressbarLoading.isVisible = true
+              // T003 - Manage the loading state on the login screen
+              // T003 - The login button is disabled while the credentials are being checked
+              binding.btnlogin.isEnabled = false
 
-            // T003 - Manage the loading state on the login screen
-            binding.btnlogin.isEnabled = !it.isLoading // T003 - The login button is disabled while the credentials are being checked
-            //if (it.isLoading) delay(5*1000) // Test  of T003
-
-
-            // Vérification qu'il n'y ait pas d'erreur
-            if (it.sErrorMessage?.isNotBlank() == true) {
-
-              // T005 - Manage the error state on the login screen
-              Snackbar.make(binding.root, it.sErrorMessage, Snackbar.LENGTH_LONG)
-                .show()
-
+              //if (it.isLoading) delay(5*1000) // Test  of T003
             }
             else{
 
-              // Accès autorisé
-              if (it.bAccessGranted){
+              binding.btnlogin.isEnabled = true
 
-                // T004 - Manage the success state on the login screen
-                // Ouverture de la fenêtre d'accueil
-                val intent = Intent(this@LoginActivity, HomeActivity::class.java)
-                startActivity(intent)
+              // Vérification qu'il n'y ait pas d'erreur
+              if (it.sErrorMessage?.isNotBlank() == true) {
 
-                finish()
+                // T005 - Manage the error state on the login screen
+                Snackbar.make(binding.root, it.sErrorMessage, Snackbar.LENGTH_LONG)
+                  .show()
 
               }
               else{
-                // Access denied
 
-                Snackbar.make(/* view = */ binding.root, /* text = */
-                  getString(R.string.access_denied), /* duration = */
-                  Snackbar.LENGTH_LONG)
-                  .show()
+                // Accès autorisé
+                if (it.bAccessGranted){
 
-                // t005 - The login button is enabled when the credentials are incorrectly checked.
-                binding.btnlogin.isEnabled = false
+                  // T004 - Manage the success state on the login screen
+                  // Ouverture de la fenêtre d'accueil
+                  val intent = Intent(this@LoginActivity, HomeActivity::class.java)
+                  // passage en paramètre à HomeActivity de l'utilisateur loggué
+                  intent.putExtra(HomeActivity.PARAM_ID_USER,binding.edtLogin.text.toString())
+                  startActivity(intent)
+
+                  finish()
+
+                }
+                else{
+                  // Access denied
+
+                  Snackbar.make(/* view = */ binding.root, /* text = */
+                    getString(R.string.access_denied), /* duration = */
+                    Snackbar.LENGTH_LONG)
+                    .show()
+
+                  // t005 - The login button is enabled when the credentials are incorrectly checked.
+                  binding.btnlogin.isEnabled = false
+
+                }
+
 
               }
 
-
             }
+
 
           }
 

@@ -30,9 +30,9 @@ class LoginViewModel @Inject constructor(
     /**
      * StateFlow est une classe du framework Kotlin Flow qui émet une séquence de valeurs et garantit qu'un observateur reçoit toujours la dernière valeur émise.
      * Dans cet exemple, on expose un  StateFlow  en lecture seule à partir du  MutableStateFlow  créé précédemment.
-     * C'est cet objet qui va être utilisé par l'activty pour collecter les LoginUIStates
+     * C'est cet objet qui va être utilisé par l'activity pour collecter les LoginUIStates
      */
-    val uiState: StateFlow<LoginUIStates> = _uiState.asStateFlow()
+    val uiState: StateFlow<LoginUIStates> = _uiState.asStateFlow() // TODO : A quoi sert asStateFlow ?
 
     /**
      * When the button 'Connexion' is usable
@@ -56,7 +56,7 @@ class LoginViewModel @Inject constructor(
                             isLoading = false,
                             bAccessGranted = false,
                             sErrorMessage = resultAPI.message,
-                            bCallback = true
+                            bEmpty = false
                         )
                     }
                 // En chargement
@@ -67,7 +67,7 @@ class LoginViewModel @Inject constructor(
                             isLoading = true,
                             bAccessGranted = false,
                             sErrorMessage = null,
-                            bCallback = true
+                            bEmpty = false
                         )
                     }
                 // Succès
@@ -79,7 +79,7 @@ class LoginViewModel @Inject constructor(
                             isLoading = false,
                             bAccessGranted = resultAPI.value.granted,
                             sErrorMessage = "",
-                            bCallback = true
+                            bEmpty = false
                         )
                     }
 

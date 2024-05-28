@@ -6,12 +6,22 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.aura.R
 import com.aura.databinding.ActivityHomeBinding
 import com.aura.ui.login.LoginActivity
 import com.aura.ui.transfer.TransferActivity
+import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 /**
  * The home activity for the app.
  */
@@ -23,7 +33,14 @@ class HomeActivity : AppCompatActivity()
    */
   private lateinit var binding: ActivityHomeBinding
 
+  private lateinit var sIdUser : String
 
+  private val viewModel: HomeViewModel by viewModels()
+
+  // ID du user passé en paramètre de l'activity
+  companion object {
+    const val PARAM_ID_USER = "PARAM_ID_USER"
+  }
 
   /**
    * A callback for the result of starting the TransferActivity.
@@ -40,14 +57,69 @@ class HomeActivity : AppCompatActivity()
     binding = ActivityHomeBinding.inflate(layoutInflater)
     setContentView(binding.root)
 
-    val tvBalance = binding.tvBalance
-    val buttonToTransfer = binding.buttonToTransfer
+    // Récupération du user (via le paramètre de l'activity)
+    sIdUser = intent.getStringExtra(PARAM_ID_USER).toString()
+    // Display the ID of user
+    title = "Aura - User $sIdUser "
 
-    tvBalance.text = "2654,54€"
+    // Chargement du compte principal
+    viewModel.getMainAccount(sIdUser)
+
+    // Utilise le lifecycleScope de l'activité pour collecter les résultats du WS
+    lifecycleScope.launch {
+
+      repeatOnLifecycle(Lifecycle.State.STARTED) {
+
+        viewModel.uiState.collect {
+          // it est ici de type HomeUIStates
+
+          binding.buttonToTransfer.isEnabled = false
+
+          // Chargement en cours
+          if (it.isViewLoading){
+              // Affichage de la progressBar pendant le chargement
+              binding.progressbarLoadingBalance.isVisible = true
+              delay(5*1000)
+          }
+          else{
+
+              binding.progressbarLoadingBalance.isVisible = false
+
+              // Vérification qu'il n'y ait pas d'erreur réseau
+              if (it.errorMessage?.isNotBlank() == true) {
+
+                Snackbar.make(binding.root, it.errorMessage, Snackbar.LENGTH_LONG)
+                  .show()
+
+              } else {
+
+                  // Récupération du compte principal
+                  val mainAccount = it.mainAccount
+
+                  // Si pas de compte principal
+                  if (mainAccount == null) {
+                      binding.tvBalance.text = getString(R.string.no_main_account)
+
+                  } else {
+                      // Cas normal, un compte principal existe
+                      binding.tvBalance.text = String.format("%.2f", mainAccount.dBalance)
+                      binding.buttonToTransfer.isEnabled = true
+                  }
+
+              }
+          }
+
+
+        }
+
+      }
+
+    }
+
 
     // LISTENER
 
-    buttonToTransfer.setOnClickListener {
+    binding.buttonToTransfer.setOnClickListener {
       startTransferActivityForResult.launch(Intent(this@HomeActivity, TransferActivity::class.java))
     }
   }
