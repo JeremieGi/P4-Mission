@@ -55,7 +55,8 @@ class LoginViewModel @Inject constructor(
                             // Syntaxe par paramètres nommés
                             isLoading = false,
                             bAccessGranted = false,
-                            sErrorMessage = resultAPI.message
+                            sErrorMessage = resultAPI.message,
+                            bCallback = true
                         )
                     }
                 // En chargement
@@ -66,22 +67,19 @@ class LoginViewModel @Inject constructor(
                             isLoading = true,
                             bAccessGranted = false,
                             sErrorMessage = null,
+                            bCallback = true
                         )
                     }
                 // Succès
                 is ResultBankAPI.Success -> {
-
-                    var sErrorLogin = ""
-                    if (!resultAPI.value.granted){
-                        sErrorLogin = "Access denied"
-                    }
 
                     _uiState.update { currentState ->
                         currentState.copy(
                             // Syntaxe par paramètres nommés
                             isLoading = false,
                             bAccessGranted = resultAPI.value.granted,
-                            sErrorMessage = sErrorLogin,
+                            sErrorMessage = "",
+                            bCallback = true
                         )
                     }
 

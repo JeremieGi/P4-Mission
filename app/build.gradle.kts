@@ -23,12 +23,21 @@ android {
 
   buildTypes {
 
-    release {
-      isMinifyEnabled = false
-      proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+//    release {
+//      isMinifyEnabled = false
+//      proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+//    }
+
+    getByName("debug") {
+      // Configuration spécifique au build type debug
+      isDebuggable = true
     }
-
-
+    getByName("release") {
+      // Configuration spécifique au build type release
+      isMinifyEnabled = true
+      proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+      // proguardFiles => obfuscation du code avec ProGuard.
+    }
 
   }
   compileOptions {
