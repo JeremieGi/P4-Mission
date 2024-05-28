@@ -13,4 +13,6 @@
   <string name="prompt_amount">Montant</string>
   <string name="action_transfer">Faire le virement</string>
     <string name="access_denied">Access denied</string>
+    <string name="no_main_account">No main account</string>
+    <string name="try_again">Try again</string>
 </resources>

@@ -62,6 +62,9 @@ class HomeActivity : AppCompatActivity()
     // Display the ID of user
     title = "Aura - User $sIdUser "
 
+    binding.tvErrorMessage.isVisible = false
+    binding.buttonTryAgain.isVisible = false
+
     // Chargement du compte principal
     viewModel.getMainAccount(sIdUser)
 
@@ -74,12 +77,14 @@ class HomeActivity : AppCompatActivity()
           // it est ici de type HomeUIStates
 
           binding.buttonToTransfer.isEnabled = false
+          binding.tvErrorMessage.isVisible = false
+          binding.buttonTryAgain.isVisible = false
 
           // Chargement en cours
           if (it.isViewLoading){
-              // Affichage de la progressBar pendant le chargement
+              // T007 - Affichage de la progressBar pendant le chargement
               binding.progressbarLoadingBalance.isVisible = true
-              delay(5*1000)
+              //delay(5*1000)
           }
           else{
 
@@ -88,10 +93,19 @@ class HomeActivity : AppCompatActivity()
               // Vérification qu'il n'y ait pas d'erreur réseau
               if (it.errorMessage?.isNotBlank() == true) {
 
-                Snackbar.make(binding.root, it.errorMessage, Snackbar.LENGTH_LONG)
-                  .show()
+                // T009 - Manage the error state on the home screen
+
+//                Snackbar.make(binding.root, it.errorMessage, Snackbar.LENGTH_LONG)
+//                  .show()
+
+                binding.tvErrorMessage.text = it.errorMessage
+                binding.tvErrorMessage.isVisible = true
+                binding.buttonTryAgain.isVisible = true
+
 
               } else {
+
+                  // T008 - Manage the success state on the homescreen
 
                   // Récupération du compte principal
                   val mainAccount = it.mainAccount
@@ -122,6 +136,13 @@ class HomeActivity : AppCompatActivity()
     binding.buttonToTransfer.setOnClickListener {
       startTransferActivityForResult.launch(Intent(this@HomeActivity, TransferActivity::class.java))
     }
+
+    binding.buttonTryAgain.setOnClickListener {
+      // Retry a connexion
+      viewModel.getMainAccount(sIdUser)
+    }
+
+
   }
 
   override fun onCreateOptionsMenu(menu: Menu?): Boolean

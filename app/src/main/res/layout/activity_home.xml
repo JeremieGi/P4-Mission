@@ -8,16 +8,41 @@
   tools:context=".ui.home.HomeActivity"
   >
 
+
+  <TextView
+      android:id="@+id/tvErrorMessage"
+      style="@style/TextAppearance.Material3.HeadlineLarge"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/activity_vertical_margin"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      android:textColor="@color/error"
+      tools:text="Error message"
+      />
+
+  <Button
+      android:id="@+id/buttonTryAgain"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="20dp"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/tvErrorMessage"
+      android:text="@string/try_again"
+      />
+
   <TextView
     android:id="@+id/tvTitle"
     style="@style/TextAppearance.Material3.BodyLarge"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:text="@string/balance"
-    app:layout_constraintBottom_toTopOf="@id/tvBalance"
-    app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
+     app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintBottom_toTopOf="@id/tvBalance"
+
     app:layout_constraintVertical_chainStyle="packed"
     />
 
@@ -26,13 +51,14 @@
     style="@style/TextAppearance.Material3.HeadlineLarge"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/activity_vertical_margin"
+    android:layout_marginTop="20dp"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@id/tvTitle"
+    app:layout_constraintTop_toTopOf="parent"
     tools:text="XXXX.XX €"
     />
+
 
   <com.google.android.material.floatingactionbutton.FloatingActionButton
     android:id="@+id/buttonToTransfer"

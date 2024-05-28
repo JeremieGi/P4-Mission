@@ -45,6 +45,7 @@ interface APIClient {
      *         "balance": 235.22
      *     }
      * ]
+     * T006 - Plug the API on the home screen
      */
     @GET("accounts/{userId}")
     suspend fun getAccountDetails(@Path("userId") userId: String): Response<List<APIResponseAccount>>
