@@ -43,19 +43,34 @@ class BankRepository(
      * Appelle l'API permettant de lister les comptes d'un utilisateur
      * et emet les résultats dans un flow qui sera lu côté UI
      */
-    fun getListAccount(sUserIDP: String) : Flow<ResultBankAPI<List<ModelResponseAccount>>> = flow {
+    fun accounts(sUserIDP: String) : Flow<ResultBankAPI<List<ModelResponseAccount>>> = flow {
 
         emit(ResultBankAPI.Loading)
 
         // Appel à l'API
-        val resultAPIListAccount = dataService.getAccountDetails(sUserIDP).body()
+        //val resultAPIListAccount = dataService.accounts(sUserIDP).body()
+        val responseRetrofit = dataService.accounts(sUserIDP)
+
         // si la requête met du temps, pas grave, on est dans une coroutine
 
-        // TODO : Revoir cette transformation en données du modèle
-        val resultModelAPIListAccount = APIResponseAccount.toListDomainModel(resultAPIListAccount)
+        if (responseRetrofit.isSuccessful){
 
-        // Ajout au flow
-        emit(ResultBankAPI.Success(resultModelAPIListAccount))
+            val resultAPIListAccount = responseRetrofit.body()
+
+            // TODO : Revoir cette transformation en données du modèle
+            val resultModelAPIListAccount = APIResponseAccount.toListDomainModel(resultAPIListAccount)
+
+            // Ajout au flow
+            emit(ResultBankAPI.Success(resultModelAPIListAccount))
+
+
+        }
+        else{
+            // TODO : J'ai été obligé d'ajouter ce cas pour que le test NetworkProblem fonctionne
+            // Je pensais que dataService.accounts(sUserIDP) allait lever une Exception et allait terminer dans le catch
+            emit(ResultBankAPI.Failure("Error code ${responseRetrofit.code()}"))
+        }
+
 
     }.catch { error ->
         emit(ResultBankAPI.Failure(error.message+" "+error.cause?.message)) // Message enrichi

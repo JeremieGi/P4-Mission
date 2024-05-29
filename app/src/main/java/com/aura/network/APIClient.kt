@@ -44,8 +44,10 @@ interface APIClient {
      * }
      * T011 - Plug the API on the transfer screen
      */
+    // TODO : Voir si je fais bien de retourner : Response<List<APIResponseAccount>> et pas Response<APIResponseAccount> où APIResponseAccount est une liste
+    // j'ai l'impression que çà me complique le code
     @GET("accounts/{userId}")
-    suspend fun getAccountDetails(@Path("userId") userId: String): Response<List<APIResponseAccount>>
+    suspend fun accounts(@Path("userId") userId: String): Response<List<APIResponseAccount>>
 
     /**
      * Equivalent de cet appel ..../transfer

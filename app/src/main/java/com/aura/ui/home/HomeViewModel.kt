@@ -34,7 +34,7 @@ class HomeViewModel @Inject constructor(
 
     fun getMainAccount(sUserIDP: String) {
 
-        dataRepository.getListAccount(sUserIDP).onEach { resultAPI ->
+        dataRepository.accounts(sUserIDP).onEach { resultAPI ->
 
             // En fonction du résultat de l'API
             when (resultAPI) {

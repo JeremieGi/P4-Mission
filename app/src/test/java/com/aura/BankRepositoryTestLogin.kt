@@ -11,18 +11,22 @@ import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import retrofit2.Response
 
-class BankRepositoryTest {
+/**
+ * Test l'API qui permet à un utilisateur de se loguer
+ */
+class BankRepositoryTestLogin {
 
     private lateinit var cutRepToTest : BankRepository //Class Under Test
     private lateinit var dataService: APIClient
 
-    // Peu importe le login / password
-    private val sLogin = "1234"
+    // Peu importe le login / password (API mockée)
+    private val sLogin = "userTest"
     private val sPwd = "pwd"
 
     @Before
@@ -32,8 +36,11 @@ class BankRepositoryTest {
         cutRepToTest = BankRepository(dataService)
     }
 
+    /**
+     * Accès autorisé
+     */
     @Test
-    fun `Login_Correct`() = runTest {
+    fun testLoginAccessGranted() = runTest {
 
         /*
          Réponse attendue :
@@ -65,19 +72,92 @@ class BankRepositoryTest {
         //then => Vérification
 
         // coVerify  et  run {}  font partie de la bibliothèque MockK et permettent de vérifier les appels de fonctions sur des mocks dans des coroutines.
-        // Par exemple,
-        //
+
         // coVerify : s'assure que la fonction  du mock  dataService  a été appelée avec les arguments spécifiés.
         coVerify {
             dataService.login(any())
         }
 
         // On attend 2 valeurs dans le flow
-        Assert.assertEquals(2, flowTest.size)
+        assertEquals(2, flowTest.size)
         // Première valeur => Loading
         assertEquals(ResultBankAPI.Loading, flowTest[0])
         // Deuxième valeur => La réponse avec succès correspondant à ce qu'on attend openForecastResponse
         assertEquals(ResultBankAPI.Success(etalonResponse.toDomainModel()), flowTest[1])
+
+    }
+
+    /**
+     * Accès refusé
+     */
+    @Test
+    fun testLoginAccessDenied() = runTest {
+
+        /*
+         Réponse attendue :
+         {
+            "granted": false
+           }
+         */
+
+        val etalonResponse = APIResponseLogin(false)
+
+        val postValues = LoginPostValue(sLogin,sPwd)
+
+        coEvery {
+            dataService.login(postValues)
+        } returns Response.success(etalonResponse)
+
+
+        //when => Test réel de la fonction
+        val flowTest = run {
+            cutRepToTest.login(sLogin,sPwd).toList()
+        }
+
+        coVerify {
+            dataService.login(any())
+        }
+
+        // On attend 2 valeurs dans le flow
+        assertEquals(2, flowTest.size)
+        // Première valeur => Loading
+        assertEquals(ResultBankAPI.Loading, flowTest[0])
+        // Deuxième valeur => La réponse avec succès correspondant à ce qu'on attend openForecastResponse
+        assertEquals(ResultBankAPI.Success(etalonResponse.toDomainModel()), flowTest[1])
+
+    }
+
+    /**
+     * Simule une erreur 404
+     */
+    @Test
+    fun testLoginNetworkProblem() = runTest {
+
+        val errorResponseBody = "Error 404 message".toResponseBody("text/plain".toMediaType())
+
+        val postValues = LoginPostValue(sLogin,sPwd)
+
+        // Le mock renverra une erreur 404
+        coEvery {
+            dataService.login(postValues)
+        } returns Response.error<APIResponseLogin>(404, errorResponseBody)
+
+
+        //when => Test réel de la fonction
+        val flowTest = run {
+            cutRepToTest.login(sLogin,sPwd).toList()
+        }
+
+        coVerify {
+            dataService.login(any())
+        }
+
+        // On attend 2 valeurs dans le flow
+        assertEquals(2, flowTest.size)
+        // Première valeur => Loading
+        assertEquals(ResultBankAPI.Loading, flowTest[0])
+        // Deuxième valeur => Erreur
+        assert(flowTest[1] is ResultBankAPI.Failure)
 
     }
 
