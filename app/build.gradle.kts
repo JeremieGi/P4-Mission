@@ -82,6 +82,10 @@ dependencies {
   androidTestImplementation("androidx.test.ext:junit:1.1.5")
   androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
+  //Tests de routines avec des Mocks
+  testImplementation("io.mockk:mockk:1.13.9")
+  testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0-RC2")
+
   // Moshi JSON Library
   implementation("com.squareup.moshi:moshi-kotlin:1.15.1")
 
