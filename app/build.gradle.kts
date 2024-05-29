@@ -5,9 +5,24 @@ plugins {
   id("com.android.application")
   id("org.jetbrains.kotlin.android")
   id("com.google.dagger.hilt.android")
+  id("checkstyle")
+}
+
+// TODO : j'ai voulu utiliser checkstyle mais sans succès
+// Onglet CheckStyle en bas ne me remonte aucune erreur
+checkstyle {
+  toolVersion = "8.29"
+  configFile = file("config/checkstyle.xml")
+}
+
+tasks.register<Checkstyle>("checkstyle") {
+  source("src/main/java")
+  include("**/*.java")
+  classpath = files()
 }
 
 android {
+
   namespace = "com.aura"
   compileSdk = 34
 
@@ -99,4 +114,6 @@ dependencies {
   implementation("com.google.dagger:hilt-android:2.51.1")
   implementation("com.google.android.gms:play-services-location:21.2.0")
   kapt("com.google.dagger:hilt-android-compiler:2.51.1")
+
+
 }
