@@ -2,10 +2,12 @@ package com.aura.repository
 
 import com.aura.model.ModelResponseAccount
 import com.aura.model.ModelResponseLogin
+import com.aura.model.ModelResponseTransfer
 import com.aura.network.APIClient
 import com.aura.network.APIResponseAccount
 import com.aura.network.LoginPostValue
 import com.aura.network.ResultBankAPI
+import com.aura.network.TransferPostValue
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -57,6 +59,28 @@ class BankRepository(
 
     }.catch { error ->
         emit(ResultBankAPI.Failure(error.message+" "+error.cause?.message)) // Message enrichi
+    }
+
+    /**
+     * Appelle l'API permettant d'effectuer des virements (transfert d'argent)
+     */
+    fun transfer(sUserSenderP: String, sUserRecipientP: String, dAmountP : Double) : Flow<ResultBankAPI<ModelResponseTransfer>> = flow {
+
+        emit(ResultBankAPI.Loading)
+
+        // Appel à l'API
+        val postValues = TransferPostValue(sUserSenderP,sUserRecipientP,dAmountP)
+        val result = dataService.transfer(postValues)
+        // si la requête met du temps, pas grave, on est dans une coroutine, le thread principal n'est pas bloqué
+
+        // Transformation du résultat en données du Model
+        // Si l'ID du recipient est pas correct le WS renvoie une erreur 500
+        val model = result.body()?.toDomainModel() ?: throw Exception("Invalid data \n Check the recipent ID")
+
+        // Ajout au flow
+        emit(ResultBankAPI.Success(model))
+    }.catch { error ->
+        emit(ResultBankAPI.Failure(error.message + " " + error.cause?.message)) // Message enrichi
     }
 
 }

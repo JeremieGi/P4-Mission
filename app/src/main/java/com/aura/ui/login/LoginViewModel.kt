@@ -55,8 +55,7 @@ class LoginViewModel @Inject constructor(
                             // Syntaxe par paramètres nommés
                             isLoading = false,
                             bAccessGranted = false,
-                            sErrorMessage = resultAPI.message,
-                            bEmpty = false
+                            sErrorMessage = resultAPI.message
                         )
                     }
                 // En chargement
@@ -66,8 +65,7 @@ class LoginViewModel @Inject constructor(
                             // Syntaxe par paramètres nommés
                             isLoading = true,
                             bAccessGranted = false,
-                            sErrorMessage = null,
-                            bEmpty = false
+                            sErrorMessage = null
                         )
                     }
                 // Succès
@@ -78,8 +76,7 @@ class LoginViewModel @Inject constructor(
                             // Syntaxe par paramètres nommés
                             isLoading = false,
                             bAccessGranted = resultAPI.value.granted,
-                            sErrorMessage = "",
-                            bEmpty = false
+                            sErrorMessage = ""
                         )
                     }
 

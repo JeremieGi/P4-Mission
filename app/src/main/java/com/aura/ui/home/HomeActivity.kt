@@ -1,5 +1,6 @@
 package com.aura.ui.home
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -18,7 +19,6 @@ import com.aura.ui.login.LoginActivity
 import com.aura.ui.transfer.TransferActivity
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -33,13 +33,15 @@ class HomeActivity : AppCompatActivity()
    */
   private lateinit var binding: ActivityHomeBinding
 
-  private lateinit var sIdUser : String
+  // TODO : A mettre dans l'activity ou dans le viewModel ?
+  private lateinit var _sIDCurrentUser : String
 
   private val viewModel: HomeViewModel by viewModels()
 
+
   // ID du user passé en paramètre de l'activity
   companion object {
-    const val PARAM_ID_USER = "PARAM_ID_USER"
+    const val PARAM_HOMEACTIVITY_IDUSER = "PARAM_ID_USER"
   }
 
   /**
@@ -47,7 +49,19 @@ class HomeActivity : AppCompatActivity()
    */
   private val startTransferActivityForResult =
     registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-      //TODO
+
+      // T013 - Manage the success state on the transfer screen
+
+      // Si transfert a été réalisé avec succès, on recharge la balance
+      if (result.resultCode == Activity.RESULT_OK) {
+
+        viewModel.getMainAccount(_sIDCurrentUser)
+
+        Snackbar.make(binding.root, getString(R.string.transfer_completed), Snackbar.LENGTH_LONG)
+          .show()
+
+      }
+
     }
 
   override fun onCreate(savedInstanceState: Bundle?)
@@ -58,15 +72,15 @@ class HomeActivity : AppCompatActivity()
     setContentView(binding.root)
 
     // Récupération du user (via le paramètre de l'activity)
-    sIdUser = intent.getStringExtra(PARAM_ID_USER).toString()
+    _sIDCurrentUser = intent.getStringExtra(PARAM_HOMEACTIVITY_IDUSER).toString()
     // Display the ID of user
-    title = "Aura - User $sIdUser "
+    title = "Aura - User $_sIDCurrentUser "
 
     binding.tvErrorMessage.isVisible = false
     binding.buttonTryAgain.isVisible = false
 
     // Chargement du compte principal
-    viewModel.getMainAccount(sIdUser)
+    viewModel.getMainAccount(_sIDCurrentUser)
 
     // Utilise le lifecycleScope de l'activité pour collecter les résultats du WS
     lifecycleScope.launch {
@@ -134,12 +148,17 @@ class HomeActivity : AppCompatActivity()
     // LISTENER
 
     binding.buttonToTransfer.setOnClickListener {
-      startTransferActivityForResult.launch(Intent(this@HomeActivity, TransferActivity::class.java))
+
+      // Passage de l'ID du user courant en paramètre
+      val intent = Intent(this@HomeActivity, TransferActivity::class.java)
+      intent.putExtra(TransferActivity.PARAM_TRANSFERACTIVITY_IDUSER,_sIDCurrentUser)
+      startTransferActivityForResult.launch(intent) // Voir la variable qui définie la callback
+
     }
 
     binding.buttonTryAgain.setOnClickListener {
       // Retry a connexion
-      viewModel.getMainAccount(sIdUser)
+      viewModel.getMainAccount(_sIDCurrentUser)
     }
 
 

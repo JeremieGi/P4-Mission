@@ -32,22 +32,27 @@ interface APIClient {
 
     /**
      * Equivalent de cet appel ..../accounts/1234
+     * Avec valeur postée :
+     * {
+     *   "sender": "5678",
+     *   "recipient": "1234",
+     *   "amount": 10
+     * }
      * qui renvoie :
-     * [
-     *     {
-     *         "id": "1",
-     *         "main": true,
-     *         "balance": 2354.23
-     *     },
-     *     {
-     *         "id": "2",
-     *         "main": false,
-     *         "balance": 235.22
-     *     }
-     * ]
-     * T006 - Plug the API on the home screen
+     * {
+     *     "result": true
+     * }
+     * T011 - Plug the API on the transfer screen
      */
     @GET("accounts/{userId}")
     suspend fun getAccountDetails(@Path("userId") userId: String): Response<List<APIResponseAccount>>
+
+    /**
+     * Equivalent de cet appel ..../transfer
+     * qui renvoie :
+     */
+    @POST("transfer")
+    suspend fun transfer(@Body jsonPostValue: TransferPostValue): Response<APIResponseTransfer> // L'objet renvoyé est un objet de type Response avec pour paramètre de généricité le type d'objet encapsulé dans cette réponse.
+
 
 }

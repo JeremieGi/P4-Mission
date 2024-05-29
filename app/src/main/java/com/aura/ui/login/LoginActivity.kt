@@ -94,7 +94,7 @@ class LoginActivity : AppCompatActivity()
 
       progressbarLoading.visibility = View.VISIBLE
 
-      // Lance l'appel API de façon asynchrose
+      // Lance l'appel API de façon asynchrone
       viewModel.login(binding.edtLogin.text.toString(), binding.edtPassword.text.toString())
 
     }
@@ -117,9 +117,11 @@ class LoginActivity : AppCompatActivity()
 
           binding.progressbarLoading.isVisible = false
 
-          // TODO : Pourquoi au lancement en debug je breake ici : un LoginUIStates vide semble envoyé
-          // Du coup j'utilise bCallback pour gérer le problème
-          if (!it.bEmpty){
+          if (!it.isLoading && (it.sErrorMessage==null) && !it.bAccessGranted) {
+              // TODO : Pourquoi au lancement en debug je breake ici : un LoginUIStates vide est envoyé
+              // Du coup j'utilise ce test pour gérer le problème
+          }
+          else{
 
             if (it.isLoading){
               // T003 - Affichage de la progressBar pendant le chargement
@@ -128,7 +130,7 @@ class LoginActivity : AppCompatActivity()
               // T003 - The login button is disabled while the credentials are being checked
               binding.btnlogin.isEnabled = false
 
-              //if (it.isLoading) delay(5*1000) // Test  of T003
+              //delay(5*1000) // Test  of T003
             }
             else{
 
@@ -151,7 +153,7 @@ class LoginActivity : AppCompatActivity()
                   // Ouverture de la fenêtre d'accueil
                   val intent = Intent(this@LoginActivity, HomeActivity::class.java)
                   // passage en paramètre à HomeActivity de l'utilisateur loggué
-                  intent.putExtra(HomeActivity.PARAM_ID_USER,binding.edtLogin.text.toString())
+                  intent.putExtra(HomeActivity.PARAM_HOMEACTIVITY_IDUSER,binding.edtLogin.text.toString())
                   startActivity(intent)
 
                   finish()

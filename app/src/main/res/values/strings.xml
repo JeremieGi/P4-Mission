@@ -15,4 +15,6 @@
     <string name="access_denied">Access denied</string>
     <string name="no_main_account">No main account</string>
     <string name="try_again">Try again</string>
+    <string name="impossible_transfer">Impossible transfer</string>
+    <string name="transfer_completed">Transfer completed</string>
 </resources>
