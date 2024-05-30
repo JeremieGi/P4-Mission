@@ -32,7 +32,7 @@ class LoginViewModel @Inject constructor(
      * Dans cet exemple, on expose un  StateFlow  en lecture seule à partir du  MutableStateFlow  créé précédemment.
      * C'est cet objet qui va être utilisé par l'activity pour collecter les LoginUIStates
      */
-    val uiState: StateFlow<LoginUIStates> = _uiState.asStateFlow() // TODO : A quoi sert asStateFlow ?
+    val uiState: StateFlow<LoginUIStates> = _uiState.asStateFlow() // asStateFlow => passe en readOnly
 
     /**
      * When the button 'Connexion' is usable

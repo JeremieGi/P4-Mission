@@ -29,7 +29,16 @@ class TransferViewModel @Inject constructor(
      * Dans cet exemple, on expose un  StateFlow  en lecture seule à partir du  MutableStateFlow  créé précédemment.
      * C'est cet objet qui va être utilisé par l'activity pour collecter les TransferUIStates
      */
-    val uiState: StateFlow<TransferUIStates> = _uiState.asStateFlow()
+    val uiState: StateFlow<TransferUIStates> = _uiState.asStateFlow() // asStateFlow => passe en readOnly
+
+    // TODO : Variable qui stocke le current user : dans le viewModel ? plutôt que dans l'activity
+    private var _sIDCurrentUser: String = ""
+    // Getters et setters
+    var sIDCurrentUser: String
+        get() = _sIDCurrentUser
+        set(value) {
+            _sIDCurrentUser = value
+        }
 
     fun bCheckButtonTransfertClickable(sRecipientP: String, dAmoutP: Double): Boolean {
         return sRecipientP.isNotEmpty() && dAmoutP!=0.0
@@ -38,10 +47,10 @@ class TransferViewModel @Inject constructor(
     /**
      * Appelle l'API permettant d'effectuer des virements (transfert d'argent)
      */
-    fun transfer(sUserSenderP: String, sUserRecipientP: String, dAmountP : Double) {
+    fun transfer(sUserRecipientP: String, dAmountP : Double) {
 
         // onEach : Ce bloc est appelé chaque fois que de nouvelles données sont émises par le flow
-        dataRepository.transfer(sUserSenderP,sUserRecipientP,dAmountP).onEach { resultAPI ->
+        dataRepository.transfer(_sIDCurrentUser,sUserRecipientP,dAmountP).onEach { resultAPI ->
 
             // En fonction du résultat de l'API
             when (resultAPI) {

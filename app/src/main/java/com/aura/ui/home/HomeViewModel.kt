@@ -8,6 +8,7 @@ import com.aura.repository.BankRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
@@ -29,12 +30,20 @@ class HomeViewModel @Inject constructor(
      * StateFlow est une classe du framework Kotlin Flow qui émet une séquence de valeurs et garantit qu'un observateur reçoit toujours la dernière valeur émise.
      * Dans cet exemple, on expose un  StateFlow  en lecture seule à partir du  MutableStateFlow  créé précédemment.
      */
-    val uiState: StateFlow<HomeUIStates> = _uiState //.asStateFlow() TODO : commenté car faisait un appel fantôme dans collect
+    val uiState: StateFlow<HomeUIStates> = _uiState.asStateFlow()
 
+    // TODO : Variable qui stocke le current user : dans le viewModel ? plutôt que dans l'activity
+    private var _sIDCurrentUser: String = ""
+    // Getters et setters
+    var sIDCurrentUser: String
+        get() = _sIDCurrentUser
+        set(value) {
+            _sIDCurrentUser = value
+        }
 
-    fun getMainAccount(sUserIDP: String) {
+    fun getMainAccount() {
 
-        dataRepository.accounts(sUserIDP).onEach { resultAPI ->
+        dataRepository.accounts(_sIDCurrentUser).onEach { resultAPI ->
 
             // En fonction du résultat de l'API
             when (resultAPI) {

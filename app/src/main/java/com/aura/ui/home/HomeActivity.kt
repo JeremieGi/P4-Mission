@@ -33,9 +33,6 @@ class HomeActivity : AppCompatActivity()
    */
   private lateinit var binding: ActivityHomeBinding
 
-  // TODO : A mettre dans l'activity ou dans le viewModel ?
-  private lateinit var _sIDCurrentUser : String
-
   private val viewModel: HomeViewModel by viewModels()
 
 
@@ -55,7 +52,7 @@ class HomeActivity : AppCompatActivity()
       // Si transfert a été réalisé avec succès, on recharge la balance
       if (result.resultCode == Activity.RESULT_OK) {
 
-        viewModel.getMainAccount(_sIDCurrentUser)
+        viewModel.getMainAccount()
 
         Snackbar.make(binding.root, getString(R.string.transfer_completed), Snackbar.LENGTH_LONG)
           .show()
@@ -72,15 +69,15 @@ class HomeActivity : AppCompatActivity()
     setContentView(binding.root)
 
     // Récupération du user (via le paramètre de l'activity)
-    _sIDCurrentUser = intent.getStringExtra(PARAM_HOMEACTIVITY_IDUSER).toString()
+    viewModel.sIDCurrentUser = intent.getStringExtra(PARAM_HOMEACTIVITY_IDUSER).toString()
     // Display the ID of user
-    title = "Aura - User $_sIDCurrentUser "
+    title = "Aura - User ${viewModel.sIDCurrentUser}"
 
     binding.tvErrorMessage.isVisible = false
     binding.buttonTryAgain.isVisible = false
 
     // Chargement du compte principal
-    viewModel.getMainAccount(_sIDCurrentUser)
+    viewModel.getMainAccount()
 
     // Utilise le lifecycleScope de l'activité pour collecter les résultats du WS
     lifecycleScope.launch {
@@ -151,14 +148,14 @@ class HomeActivity : AppCompatActivity()
 
       // Passage de l'ID du user courant en paramètre
       val intent = Intent(this@HomeActivity, TransferActivity::class.java)
-      intent.putExtra(TransferActivity.PARAM_TRANSFERACTIVITY_IDUSER,_sIDCurrentUser)
+      intent.putExtra(TransferActivity.PARAM_TRANSFERACTIVITY_IDUSER,viewModel.sIDCurrentUser)
       startTransferActivityForResult.launch(intent) // Voir la variable qui définie la callback
 
     }
 
     binding.buttonTryAgain.setOnClickListener {
       // Retry a connexion
-      viewModel.getMainAccount(_sIDCurrentUser)
+      viewModel.getMainAccount()
     }
 
 

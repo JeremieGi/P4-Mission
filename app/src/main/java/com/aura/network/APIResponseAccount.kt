@@ -30,7 +30,6 @@ data class APIResponseAccount(
      */
     fun toDomainModel() : ModelResponseAccount {
 
-        // TODO : Est ce que la classe ModelResponseAccount est vraiment utile ici ? car équivalente à APIResponseAccount
         return ModelResponseAccount(
             sAccountID = sAccountID,
             bMainAccount = bMainAccount,
@@ -45,7 +44,6 @@ data class APIResponseAccount(
          */
         fun toListDomainModel(resultAPIListAccount: List<APIResponseAccount>?): List<ModelResponseAccount> {
 
-            // TODO : Ici je peux mettre val alors que j'ajoute des éléments dans la liste
             val result = mutableListOf<ModelResponseAccount>()
             resultAPIListAccount?.forEach {
                 result.add(it.toDomainModel())

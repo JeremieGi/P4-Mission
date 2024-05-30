@@ -31,8 +31,6 @@ class TransferActivity : AppCompatActivity()
 
   private val viewModel: TransferViewModel by viewModels()
 
-  // TODO : A mettre dans l'activity ou dans le viewModel ?
-  private lateinit var _sIDCurrentUser : String
 
   // ID du user passé en paramètre de l'activity
   companion object {
@@ -47,9 +45,9 @@ class TransferActivity : AppCompatActivity()
     setContentView(binding.root)
 
     // Récupération du user (via le paramètre de l'activity)
-    _sIDCurrentUser = intent.getStringExtra(PARAM_TRANSFERACTIVITY_IDUSER).toString()
+    viewModel.sIDCurrentUser = intent.getStringExtra(PARAM_TRANSFERACTIVITY_IDUSER).toString()
     // Display the ID of user
-    title = "Aura - User $_sIDCurrentUser "
+    title = "Aura - User ${viewModel.sIDCurrentUser}"
 
     binding.buttonTransfer.isEnabled = false
     binding.tvErrorMessageTransfer.isVisible = false
@@ -99,7 +97,7 @@ class TransferActivity : AppCompatActivity()
       binding.progressbarTransferLoading.visibility = View.VISIBLE
 
       // Lance l'appel API de façon asynchrone
-      viewModel.transfer(_sIDCurrentUser,binding.edtRecipient.text.toString(),dGetAmount())
+      viewModel.transfer(binding.edtRecipient.text.toString(),dGetAmount())
 
     }
 

@@ -57,7 +57,7 @@ class BankRepository(
 
             val resultAPIListAccount = responseRetrofit.body()
 
-            // TODO : Revoir cette transformation en données du modèle
+            // TODO : Revoir cette transformation en données du modèle (peut-être revoir le type de retour de la méthode accounts)
             val resultModelAPIListAccount = APIResponseAccount.toListDomainModel(resultAPIListAccount)
 
             // Ajout au flow
