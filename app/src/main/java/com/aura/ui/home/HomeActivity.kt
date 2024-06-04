@@ -33,7 +33,7 @@ class HomeActivity : AppCompatActivity()
    */
   private lateinit var binding: ActivityHomeBinding
 
-  private val viewModel: HomeViewModel by viewModels()
+  private val viewModel: HomeViewModel by viewModels() // délégation
 
 
   // ID du user passé en paramètre de l'activity

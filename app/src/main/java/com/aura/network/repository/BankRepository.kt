@@ -57,7 +57,7 @@ class BankRepository(
 
             val resultAPIListAccount = responseRetrofit.body()
 
-            // TODO : Revoir cette transformation en données du modèle (peut-être revoir le type de retour de la méthode accounts)
+            // Transformation en objet modèle
             val resultModelAPIListAccount = APIResponseAccount.toListDomainModel(resultAPIListAccount)
 
             // Ajout au flow
@@ -66,7 +66,7 @@ class BankRepository(
 
         }
         else{
-            // TODO : J'ai été obligé d'ajouter ce cas pour que le test NetworkProblem fonctionne
+            // J'ai été obligé d'ajouter ce cas pour que le test NetworkProblem fonctionne
             // Je pensais que dataService.accounts(sUserIDP) allait lever une Exception et allait terminer dans le catch
             emit(ResultBankAPI.Failure("Error code ${responseRetrofit.code()}"))
         }

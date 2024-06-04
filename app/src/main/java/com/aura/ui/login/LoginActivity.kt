@@ -14,6 +14,7 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.aura.BuildConfig
 import com.aura.R
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
@@ -45,12 +46,12 @@ class LoginActivity : AppCompatActivity()
 
     binding.btnlogin.isEnabled = false
 
-    // TODO : Execution de code uniquement en debug ?
-    //if (BuildConfig.DEBUG) {
-      binding.edtLogin.setText("1234")
-      binding.edtPassword.setText("p@sswOrd")
-      binding.btnlogin.isEnabled = true
-    //}
+    // Execution de code uniquement en debug ?
+    if (BuildConfig.DEBUG) {
+        binding.edtLogin.setText("1234")
+        binding.edtPassword.setText("p@sswOrd")
+        binding.btnlogin.isEnabled = true
+    }
 
 
     // LISTENERS
@@ -118,7 +119,7 @@ class LoginActivity : AppCompatActivity()
           binding.progressbarLoading.isVisible = false
 
           if (!it.isLoading && (it.sErrorMessage==null) && !it.bAccessGranted) {
-              // TODO : Pourquoi au lancement en debug je breake ici : un LoginUIStates vide est envoyé
+              // Pourquoi au lancement en debug je breake ici : un LoginUIStates vide est envoyé
               // Du coup j'utilise ce test pour gérer le problème
           }
           else{

@@ -32,8 +32,8 @@ class HomeViewModel @Inject constructor(
      */
     val uiState: StateFlow<HomeUIStates> = _uiState.asStateFlow()
 
-    // TODO : Variable qui stocke le current user : dans le viewModel ? plutôt que dans l'activity
     private var _sIDCurrentUser: String = ""
+
     // Getters et setters
     var sIDCurrentUser: String
         get() = _sIDCurrentUser

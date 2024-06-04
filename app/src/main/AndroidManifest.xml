@@ -7,7 +7,7 @@
 
   <uses-permission android:name="android.permission.INTERNET" />
 
-  <!-- TODO : J'ai du ajouter usesCleartextTraffic pour pouvoir faire des requêtes HTTP-->
+  <!-- J'ai du ajouter usesCleartextTraffic pour pouvoir faire des requêtes HTTP-->
   <application android:name=".app.BankApp"
       android:usesCleartextTraffic="true"
     android:allowBackup="true"

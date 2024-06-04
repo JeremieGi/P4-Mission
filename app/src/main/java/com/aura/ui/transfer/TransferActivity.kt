@@ -11,6 +11,7 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.aura.BuildConfig
 import com.aura.databinding.ActivityTransferBinding
 import com.aura.R
 import com.google.android.material.snackbar.Snackbar
@@ -52,12 +53,12 @@ class TransferActivity : AppCompatActivity()
     binding.buttonTransfer.isEnabled = false
     binding.tvErrorMessageTransfer.isVisible = false
 
-    // TODO : Execution de code uniquement en debug ?
-    //if (BuildConfig.DEBUG) {
-    binding.edtRecipient.setText("5678")
-    binding.edtAmount.setText("10")
-    binding.buttonTransfer.isEnabled = true
-    //}
+    // Execution de code uniquement en debug ?
+    if (BuildConfig.DEBUG) {
+        binding.edtRecipient.setText("5678")
+        binding.edtAmount.setText("10")
+        binding.buttonTransfer.isEnabled = true
+    }
 
     // Listeners des champs de saisie Destinataire et Montant
     binding.edtRecipient.addTextChangedListener(object : TextWatcher {
@@ -120,7 +121,7 @@ class TransferActivity : AppCompatActivity()
 
 
           if (!it.isLoading && (it.sErrorMessage==null) && !it.bTransfertOK) {
-            // TODO : Pourquoi au lancement en debug je breake ici : un LoginUIStates vide est envoyé
+            // Pourquoi au lancement en debug je breake ici : un LoginUIStates vide est envoyé
             // Du coup j'utilise ce test pour gérer le problème
           }
           else{

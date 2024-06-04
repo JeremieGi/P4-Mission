@@ -14,7 +14,6 @@ object DataModule {
 
     /**
      * Constructeur du repository
-     * TODO : Utilité de faire 2 Modules pour les DI ?
      */
     @Provides
     @Singleton

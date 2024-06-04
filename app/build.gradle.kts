@@ -8,7 +8,7 @@ plugins {
   id("checkstyle")
 }
 
-// TODO : j'ai voulu utiliser checkstyle mais sans succès
+// j'ai voulu utiliser checkstyle mais sans succès
 // Onglet CheckStyle en bas ne me remonte aucune erreur
 checkstyle {
   toolVersion = "8.29"
@@ -36,6 +36,10 @@ android {
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }
 
+  buildFeatures{
+    buildConfig = true
+  }
+
   buildTypes {
 
 //    release {
@@ -60,7 +64,8 @@ android {
     targetCompatibility = JavaVersion.VERSION_1_8
   }
 
-  // TODO : J'ai été obligé de faire celà sinon çà me disait que kotlin utilisait java 17...
+  // TODO : Essayer de commenter
+  // J'ai été obligé de faire celà sinon çà me disait que kotlin utilisait java 17...
   // Configurer la version de la cible de la JVM pour kaptGenerateStubsDebugKotlin
   tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"

@@ -31,8 +31,8 @@ class TransferViewModel @Inject constructor(
      */
     val uiState: StateFlow<TransferUIStates> = _uiState.asStateFlow() // asStateFlow => passe en readOnly
 
-    // TODO : Variable qui stocke le current user : dans le viewModel ? plutôt que dans l'activity
     private var _sIDCurrentUser: String = ""
+
     // Getters et setters
     var sIDCurrentUser: String
         get() = _sIDCurrentUser

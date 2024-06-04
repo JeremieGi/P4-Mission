@@ -29,7 +29,7 @@ object NetworkModule {
     @Provides
     fun provideRetrofit(): Retrofit {
         return Retrofit.Builder()
-            // TODO : Erreur au lancement du serveur API dans intelIJ mais le serveur répond.
+            // Erreur au lancement du serveur API dans intelIJ mais le serveur répond.
             .baseUrl("http://10.0.2.2:8080/") // Si vous lancez l’application Android depuis un émulateur, utilisez l’URL http://10.0.2.2:8080 pour consommer les routes de l’API.
             .addConverterFactory(
                 MoshiConverterFactory.create(
